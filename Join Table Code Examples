@@ -1,0 +1,52 @@
+TOP 10 COUNTRIES FOR ROCKBUSTER IN TERMS OF CUSTOMER NUMBERS
+
+SELECT
+	country.country,
+	COUNT (customer.customer_id) AS number_of_customers
+FROM customer
+	JOIN address ON customer.address_id = address.address_id
+	JOIN city ON address.city_id = city.city_id
+	JOIN country ON city.country_id = country.country_id
+GROUP BY country.country
+ORDER BY number_of_customers DESC
+LIMIT 10;
+
+
+IDENTIFY THE TOP 10 CITIES THAT FALL WITHIN THE TOP 10 COUNTRIES
+
+SELECT
+	country.country,city.city,
+	COUNT (customer.customer_id) AS number_of_customers
+	
+FROM customer
+	JOIN address ON customer.address_id = address.address_id
+	JOIN city ON address.city_id = city.city_id
+	JOIN country ON city.country_id = country.country_id
+	
+WHERE country.country IN('India','China','United States', 'Japan', 'Mexico', 'Brazil','Russian Federation','Philippines','Turkey','Indonesia')
+GROUP BY country.country, city.city
+ORDER BY number_of_customers DESC
+LIMIT 10;
+
+
+TOP 5 CUSTOMERS FROM THE TOP 10 CITIES WHO’VE PAID THE HIGHEST TOTAL AMOUNTS TO ROCKBUSTER
+
+SELECT
+	customer.customer_id,
+	customer.first_name,
+	customer.last_name,
+	country.country,
+	city.city,
+	SUM(payment.amount) AS total_rental_payment
+	
+FROM customer
+	JOIN payment ON customer.customer_id = payment.customer_id
+	JOIN address ON customer.address_id = address.address_id
+	JOIN city ON address.city_id = city.city_id
+	JOIN country ON city.country_id = country.country_id
+
+WHERE city.city IN ('Aurora','Acua','Citrus Heights','Iwaki','Ambattur','Shanwei','So Leopoldo','Teboksary','Tianjin','Cianjur')
+
+GROUP BY customer.customer_id, customer.first_name, customer.last_name, country.country, city.city
+ORDER BY total_rental_payment DESC
+LIMIT 5;
